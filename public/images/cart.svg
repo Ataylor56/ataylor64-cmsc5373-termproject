@@ -1,0 +1,9 @@
+<svg version="1.1" id="shopping-cart" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+	 y="0px" width="52px" height="52px" viewBox="0 0 52 52" enable-background="new 0 0 52 52" xml:space="preserve">
+<path id="wheel2" fill-rule="evenodd" clip-rule="evenodd" d="M13.5,38c2.48505,0,4.5,2.01495,4.5,4.5S15.98505,47,13.5,47
+	C11.01495,47,9,44.98505,9,42.5S11.01495,38,13.5,38"/>
+<path id="wheel1" fill-rule="evenodd" clip-rule="evenodd" d="M31.5,38c2.48505,0,4.5,2.01495,4.5,4.5S33.98505,47,31.5,47
+	S27,44.98505,27,42.5S29.01495,38,31.5,38"/>
+<polyline id="cart" fill-rule="evenodd" clip-rule="evenodd" points="37.00404,35 41.27271,8.04386 46.99997,8.04386 46.99997,5 
+	38.69542,5 36.65524,17 4.99999,17 8,35 "/>
+</svg>
