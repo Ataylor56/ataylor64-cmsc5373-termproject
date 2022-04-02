@@ -79,6 +79,30 @@ export async function profile_page() {
                                 pattern="[0-9]+" minlength="5" maxlength="5">
                         </td>
                     </tr>
+					<tr>
+                        <td width="10%">Shirt Size: </td>
+                        <td>
+                            <input type="text" name="shirtSize" value="${accountInfo.shirtSize}" disabled
+                                placeholder="1 - 3 Letter Shirt Size"
+                                minlength="1" maxlength="3">
+                        </td>
+                    </tr>
+					<tr>
+                        <td width="10%">Sweatshirt Size: </td>
+                        <td>
+                            <input type="text" name="sweatshirtSize" value="${accountInfo.sweatshirtSize}" disabled
+                                placeholder="1 - 3 Letter Sweatshirt Size"
+                                minlength="1" maxlength="3">
+                        </td>
+                    </tr>
+					<tr>
+                        <td width="10%">Shoe Size: </td>
+                        <td>
+                            <input type="text" name="shoeSize" value="${accountInfo.shoeSize}" disabled
+                                placeholder="1-2 Digit Shoe Size (US)"
+                                minlength="1" maxlength="2">
+                        </td>
+                    </tr>
                     <tr>
                         <td width="15%">Credit Card #: </td>
                         <td>
@@ -166,6 +190,9 @@ export async function profile_page() {
 			if (e.target.city.value.trim() != accountInfo.city) updateInfo.city = e.target.city.value.trim();
 			if (e.target.state.value.trim() != accountInfo.state) updateInfo.state = e.target.state.value.trim();
 			if (e.target.zip.value.trim() != accountInfo.zip) updateInfo.zip = e.target.zip.value.trim();
+			if (e.target.shirtSize.value.trim() != accountInfo.shirtSize) updateInfo.shirtSize = e.target.shirtSize.value.trim();
+			if (e.target.sweatshirtSize.value.trim() != accountInfo.sweatshirtSize) updateInfo.sweatshirtSize = e.target.sweatshirtSize.value.trim();
+			if (e.target.shoeSize.value.trim() != accountInfo.shoeSize) updateInfo.shoeSize = e.target.shoeSize.value.trim();
 			if (e.target.creditNo.value.trim() != accountInfo.creditNo) updateInfo.creditNo = e.target.creditNo.value.trim();
 
 			if (Object.keys(updateInfo).length > 0) {
@@ -193,6 +220,9 @@ export async function profile_page() {
 			e.target.city.value = accountInfo.city;
 			e.target.state.value = accountInfo.state;
 			e.target.zip.value = accountInfo.zip;
+			e.target.shirtSize.value = accountInfo.shirtSize;
+			e.target.sweatshirtSize.value = accountInfo.sweatshirtSize;
+			e.target.shoeSize.value = accountInfo.shoeSize;
 			e.target.creditNo.value = accountInfo.creditNo;
 		} else {
 			if (DEV) console.log(e);

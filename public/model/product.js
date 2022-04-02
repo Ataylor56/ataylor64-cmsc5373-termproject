@@ -2,6 +2,7 @@ export class Product {
 	constructor(data) {
 		if (data) {
 			this.name = data.name.trim();
+			this.type = data.type.trim();
 			this.brand = data.brand.trim();
 			this.model = data.model.trim();
 			this.productStyle = data.productStyle.trim();
@@ -28,6 +29,7 @@ export class Product {
 	serialize() {
 		return {
 			name: this.name,
+			type: this.type,
 			brand: this.brand,
 			model: this.model,
 			productStyle: this.productStyle,

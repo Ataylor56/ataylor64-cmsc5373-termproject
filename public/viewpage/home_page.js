@@ -17,7 +17,7 @@ export function addEventListeners() {
 }
 
 export async function home_page() {
-	let html = `<h1>Look what's all in stock!</h1>`;
+	let html = `<h1>Check out all of our Products!</h1>`;
 	let products;
 	try {
 		products = await getProductList();
@@ -76,6 +76,7 @@ function buildProductView(product, index) {
         <div class="card-body">
             <h5 class="card-title">${product.name}</h5>
             <p class="card-text">
+			Type: ${product.type}<br>
             ${Util.currency(product.price.toFixed(2))}<br>
 			Total Stock: ${product.stock}<br>
 			<button id="button-more-info-${product.docId}" class="btn" type="submit">More Info &rarr;</button>

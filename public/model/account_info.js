@@ -5,6 +5,9 @@ export class AccountInfo {
 		this.city = data.city;
 		this.state = data.state;
 		this.zip = data.zip;
+		this.shirtSize = data.shirtSize;
+		this.sweatshirtSize = data.sweatshirtSize;
+		this.shoeSize = data.shoeSize;
 		this.creditNo = data.creditNo;
 		this.photoURL = data.photoURL;
 	}
@@ -16,6 +19,9 @@ export class AccountInfo {
 			city: this.city,
 			state: this.state,
 			zip: this.zip,
+			shirtSize: this.shirtSize,
+			sweatshirtSize: this.sweatshirtSize,
+			shoeSize: this.shoeSize,
 			creditNo: this.creditNo,
 			photoURL: this.photoURL,
 		};
@@ -28,6 +34,9 @@ export class AccountInfo {
 			city: '',
 			state: '',
 			zip: '',
+			shirtSize: '',
+			sweatshirtSize: '',
+			shoeSize: '',
 			creditNo: '',
 			photoURL: 'images/profile_default.svg',
 		});
