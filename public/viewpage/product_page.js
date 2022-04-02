@@ -15,9 +15,11 @@ export async function product_page(productId) {
             <img src="${product.imageURL}" class="img-fluid" alt="...">   
             </div>
             <div class="col-lg-2">
+                Type: ${product.type}<br>
                 Brand: ${product.brand}<br>
                 Model: ${product.model}<br>
                 Colorway: ${product.productStyle}<br>
+                Price: $${product.price}<br>
                 Number In Stock: ${product.stock}
                 <div class="container pt-3 ${currentUser && product.stock !== 0 ? 'd-block' : 'd-none'}">
                 <form method="post" class="form-product-qty">
