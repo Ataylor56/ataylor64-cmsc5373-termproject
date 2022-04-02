@@ -6,6 +6,11 @@ export class ShoppingCart {
 		this.items = []; // Array of Products
 	}
 
+	claimStock() {
+		const updatedCart = this.items.forEach((p) => p.stock -= p.qty);
+		return updatedCart;
+	}
+
 	addItem(product) {
 		const index = this.items.findIndex((e) => product.docId == e.docId);
 		if (index < 0) {

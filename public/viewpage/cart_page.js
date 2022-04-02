@@ -5,7 +5,7 @@ import { currentUser } from '../controller/firebase_auth.js';
 import { currency, disableButton, enableButton, info } from './util.js';
 import { home_page } from './home_page.js';
 import { DEV } from '../model/constants.js';
-import { checkout } from '../controller/firestore_controller.js';
+import { checkout, updateCheckoutProducts } from '../controller/firestore_controller.js';
 
 export function addEventListeners() {
 	MENU.Cart.addEventListener('click', async (e) => {
@@ -103,6 +103,10 @@ export async function cart_page() {
 			// charging is done
 			// save to firebase(await)
 			await checkout(cart);
+			cart.claimStock();
+	
+			cart.items.forEach(product => updateProduct(product));
+
 			info('Success!', 'Checkout Complete');
 			cart.clear();
 			MENU.CartItemCount.innerHTML = 0;
@@ -114,6 +118,12 @@ export async function cart_page() {
 		}
 		enableButton(checkoutButton, label);
 	});
+}
+
+async function updateProduct(product) {
+	var updateInfo = {};
+	updateInfo.stock = product.stock;
+	await updateCheckoutProducts(product.docId, updateInfo);
 }
 
 export function initShoppingCart() {

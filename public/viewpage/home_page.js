@@ -5,6 +5,7 @@ import { getProductList } from '../controller/firestore_controller.js';
 import { DEV } from '../model/constants.js';
 import { currentUser } from '../controller/firebase_auth.js';
 import { cart } from './cart_page.js';
+import { product_page } from './product_page.js';
 
 export function addEventListeners() {
 	MENU.Home.addEventListener('click', async (e) => {
@@ -35,6 +36,16 @@ export async function home_page() {
 		html += buildProductView(products[i], i);
 	}
 	root.innerHTML = html;
+	
+	for (let j = 0; j<products.length; j++)
+	{
+		var productMoreInfoButton = document.getElementById(`button-more-info-${products[j].docId}`);
+		productMoreInfoButton.addEventListener('click', async (e) => {
+			e.preventDefault();
+			history.pushState(null, null, ROUTE_PATHNAMES.PRODUCT + '#' + products[j].docId);
+			await product_page(products[j].docId);
+		});
+	};
 
 	const productForms = document.getElementsByClassName('form-product-qty');
 	for (let i = 0; i < productForms.length; i++) {
@@ -67,9 +78,10 @@ function buildProductView(product, index) {
             <h5 class="card-title">${product.name}</h5>
             <p class="card-text">
             ${Util.currency(product.price.toFixed(2))}<br>
-            ${product.summary}
+			Total Stock: ${product.stock}<br>
+			<button id="button-more-info-${product.docId}" class="btn" type="submit">More Info &rarr;</button>
             </p>
-            <div class="container pt-3 ${currentUser ? 'd-block' : 'd-none'}">
+            <div class="container pt-3 ${currentUser && product.stock !== 0 ? 'd-block' : 'd-none'}">
                 <form method="post" class="form-product-qty">
                     <input type="hidden" name="index" value="${index}">
                     <button class="btn btn-outline-danger" type="submit" onclick="this.form.submitter='DEC'">&minus;</button>

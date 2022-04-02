@@ -36,6 +36,11 @@ export async function checkout(cart) {
 	await addDoc(collection(db, COLLECTION_NAMES.PURCHASE_HISTORY), data);
 }
 
+export async function updateCheckoutProducts(uid, updateInfo) {
+	const docRef = doc(db, COLLECTION_NAMES.PRODUCT, uid);
+	await updateDoc(docRef, updateInfo);
+}
+
 export async function getPurchaseHistory(uid) {
 	const q = query(collection(db, COLLECTION_NAMES.PURCHASE_HISTORY), where('uid', '==', uid), orderBy('timestamp', 'desc'));
 	const snapShot = await getDocs(q);
@@ -46,6 +51,14 @@ export async function getPurchaseHistory(uid) {
 		carts.push(sc);
 	});
 	return carts;
+}
+
+export async function getProduct(uid) {
+	const docRef = doc(db, COLLECTION_NAMES.PRODUCT, uid);
+	const docSnap = await getDoc(docRef);
+	if (docSnap.exists()) {
+		return new Product(docSnap.data());
+	}
 }
 
 export async function getAccountInfo(uid) {
