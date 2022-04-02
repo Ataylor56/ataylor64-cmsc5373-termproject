@@ -9,7 +9,7 @@ export const ROUTE_PATHNAMES = {
 	PURCHASES: '/purchase',
 	PROFILE: '/profile',
 	CART: '/cart',
-	PRODUCT: '/product'
+	PRODUCT: '/product',
 };
 
 export const routes = [
@@ -17,7 +17,7 @@ export const routes = [
 	{ pathname: ROUTE_PATHNAMES.PURCHASES, page: purchases_page },
 	{ pathname: ROUTE_PATHNAMES.PROFILE, page: profile_page },
 	{ pathname: ROUTE_PATHNAMES.CART, page: cart_page },
-	{ pathname: ROUTE_PATHNAMES.PRODUCT, page: product_page }
+	{ pathname: ROUTE_PATHNAMES.PRODUCT, page: product_page },
 ];
 
 export function routing(pathname, hash) {

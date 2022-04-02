@@ -36,16 +36,15 @@ export async function home_page() {
 		html += buildProductView(products[i], i);
 	}
 	root.innerHTML = html;
-	
-	for (let j = 0; j<products.length; j++)
-	{
+
+	for (let j = 0; j < products.length; j++) {
 		var productMoreInfoButton = document.getElementById(`button-more-info-${products[j].docId}`);
 		productMoreInfoButton.addEventListener('click', async (e) => {
 			e.preventDefault();
 			history.pushState(null, null, ROUTE_PATHNAMES.PRODUCT + '#' + products[j].docId);
 			await product_page(products[j].docId);
 		});
-	};
+	}
 
 	const productForms = document.getElementsByClassName('form-product-qty');
 	for (let i = 0; i < productForms.length; i++) {

@@ -7,7 +7,7 @@ export class ShoppingCart {
 	}
 
 	claimStock() {
-		const updatedCart = this.items.forEach((p) => p.stock -= p.qty);
+		const updatedCart = this.items.forEach((p) => (p.stock -= p.qty));
 		return updatedCart;
 	}
 

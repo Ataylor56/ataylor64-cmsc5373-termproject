@@ -5,9 +5,8 @@ import { DEV } from '../model/constants.js';
 import { currentUser } from '../controller/firebase_auth.js';
 import { cart } from './cart_page.js';
 
-
 export async function product_page(productId) {
-    var product = await getProduct(productId);
+	var product = await getProduct(productId);
 
 	let html = `<h1>${product.brand} ${product.model} ${product.productStyle}</h1>
     <div class="container">
@@ -33,9 +32,9 @@ export async function product_page(productId) {
         </div>
     </div>   
     `;
-    root.innerHTML = html;
+	root.innerHTML = html;
 
-    const productForms = document.getElementsByClassName('form-product-qty');
+	const productForms = document.getElementsByClassName('form-product-qty');
 	for (let i = 0; i < productForms.length; i++) {
 		productForms[i].addEventListener('submit', (e) => {
 			e.preventDefault();
