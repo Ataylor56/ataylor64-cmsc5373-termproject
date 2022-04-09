@@ -18,9 +18,17 @@ import { ShoppingCart } from '../model/shopping_cart.js';
 
 const db = getFirestore();
 
-export async function getProductList() {
+export async function getProductList(props) {
+	const filter = props.filter;
+	let q = null;
 	const products = [];
-	const q = query(collection(db, COLLECTION_NAMES.PRODUCT), orderBy('name'));
+
+	if (filter.where) {
+		q = query(collection(db, COLLECTION_NAMES.PRODUCT), where(filter.where.first, filter.where.comparison, filter.where.second));
+	} else {
+		q = query(collection(db, COLLECTION_NAMES.PRODUCT), orderBy(filter.orderBy, filter.order));
+	}
+
 	const snapShot = await getDocs(q);
 
 	snapShot.forEach((doc) => {

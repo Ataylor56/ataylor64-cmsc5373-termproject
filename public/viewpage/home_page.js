@@ -7,20 +7,77 @@ import { currentUser } from '../controller/firebase_auth.js';
 import { cart } from './cart_page.js';
 import { product_page } from './product_page.js';
 
+let filter = null;
+
 export function addEventListeners() {
 	MENU.Home.addEventListener('click', async (e) => {
 		history.pushState(null, null, ROUTE_PATHNAMES.HOME);
 		const label = Util.disableButton(MENU.Home);
-		await home_page();
+		await home_page({ filter });
 		Util.enableButton(MENU.Home, label);
 	});
 }
 
-export async function home_page() {
+export async function home_page(props) {
 	let html = `<h1>Check out all of our Products!</h1>`;
+
+	if (!props) {
+		filter = {
+			selected: {
+				brand: 'all',
+			},
+			orderBy: 'name',
+			order: 'asc',
+		};
+	} else {
+		filter = props.filter;
+	}
+
+	const dropdownFilterList = await getDropdownFilterList();
+
+	html += `
+        <div class="d-flex flex-row justify-content-end ">
+			<li class="dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Brand: ${filter.selected.brand.toUpperCase()}
+				</a>
+				<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<li id="all" class="filter-brand"><a class="dropdown-item" href="#">All</a></li>
+					<li id="Adidas" class="filter-brand"><a class="dropdown-item" href="#">Adidas</a></li>
+					<li id="Jordan" class="filter-brand"><a class="dropdown-item" href="#">Jordan</a></li>
+					<li id="Yeezy" class="filter-brand"><a class="dropdown-item" href="#">Yeezy</a></li>
+				</ul>
+			</li>
+			`;
+
+	if (filter.selected.brand == 'all') {
+		html += `
+			<li class="dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Order By: ${filter.orderBy.toUpperCase()}
+				</a>
+				<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+					${dropdownFilterList}
+				</ul>
+			</li>
+			`;
+
+		html += `
+			<li class="dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				${filter.order.toUpperCase()}
+				</a>
+				<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<li id="asc" class="order"><a class="dropdown-item" href="#">Ascending</a></li>
+					<li id="desc" class="order"><a class="dropdown-item" href="#">Descending</a></li>
+				</ul>
+			</li>`;
+	}
+	html += '</div><br>';
+
 	let products;
 	try {
-		products = await getProductList();
+		products = await getProductList({ filter });
 		if (cart && cart.getTotalQty() != 0) {
 			cart.items.forEach((item) => {
 				const p = products.find((e) => e.docId == item.docId);
@@ -36,6 +93,43 @@ export async function home_page() {
 		html += buildProductView(products[i], i);
 	}
 	root.innerHTML = html;
+
+	const brandOptions = document.getElementsByClassName('filter-brand');
+	for (let i = 0; i < brandOptions.length; i++) {
+		brandOptions[i].addEventListener('click', async (e) => {
+			e.preventDefault();
+			const id = brandOptions[i].id;
+			if (id == 'all') {
+				filter.where = null;
+			} else {
+				filter.where = {
+					first: 'brand',
+					comparison: '==',
+					second: brandOptions[i].id,
+				};
+			}
+			filter.selected.brand = id;
+			await home_page({ filter });
+		});
+	}
+
+	const orderOptions = document.getElementsByClassName('order');
+	for (let i = 0; i < orderOptions.length; i++) {
+		orderOptions[i].addEventListener('click', async (e) => {
+			e.preventDefault();
+			filter.order = orderOptions[i].id;
+			await home_page({ filter });
+		});
+	}
+
+	const dropdownOptions = document.getElementsByClassName('filter');
+	for (let j = 0; j < dropdownOptions.length; j++) {
+		dropdownOptions[j].addEventListener('click', async (e) => {
+			e.preventDefault();
+			filter.orderBy = dropdownOptions[j].id;
+			await home_page({ filter });
+		});
+	}
 
 	for (let j = 0; j < products.length; j++) {
 		var productMoreInfoButton = document.getElementById(`button-more-info-${products[j].docId}`);
@@ -94,4 +188,18 @@ function buildProductView(product, index) {
         </div>
     </div>
     `;
+}
+
+async function getDropdownFilterList() {
+	let html = '';
+	if (filter.orderBy != 'name') {
+		html += `<li id="name" class="filter"><a class="dropdown-item" href="#">Name</a></li>`;
+	}
+	if (filter.orderBy != 'brand' || filter.selected.brand != 'all') {
+		html += `<li id="brand" class="filter"><a class="dropdown-item" href="#">Brand</a></li>`;
+	}
+	if (filter.orderBy != 'price') {
+		html += `<li id="price" class="filter"><a class="dropdown-item" href="#">Price</a></li>`;
+	}
+	return html;
 }

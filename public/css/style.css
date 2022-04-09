@@ -25,3 +25,7 @@ li.nav-item {
 .modal-postauth {
 	display: none;
 }
+
+li {
+	list-style-type: none;
+}
