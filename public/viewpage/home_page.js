@@ -25,6 +25,7 @@ export async function home_page(props) {
 		filter = {
 			selected: {
 				brand: 'all',
+				productType: 'all',
 			},
 			orderBy: 'name',
 			order: 'asc',
@@ -46,6 +47,21 @@ export async function home_page(props) {
 					<li id="Adidas" class="filter-brand"><a class="dropdown-item" href="#">Adidas</a></li>
 					<li id="Jordan" class="filter-brand"><a class="dropdown-item" href="#">Jordan</a></li>
 					<li id="Yeezy" class="filter-brand"><a class="dropdown-item" href="#">Yeezy</a></li>
+				</ul>
+			</li>
+			`;
+
+	html += `
+			<li class="dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Product Type: ${filter.selected.productType.toUpperCase()}
+				</a>
+				<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<li id="all" class="filter-type"><a class="dropdown-item" href="#">All</a></li>
+					<li id="Shoes" class="filter-type"><a class="dropdown-item" href="#">Shoes</a></li>
+					<li id="Shirts" class="filter-type"><a class="dropdown-item" href="#">Shirts</a></li>
+					<li id="Sweatshirts" class="filter-type"><a class="dropdown-item" href="#">Sweatshirts</a></li>
+					<li id="Accessories" class="filter-type"><a class="dropdown-item" href="#">Accessories</a></li>
 				</ul>
 			</li>
 			`;
@@ -93,6 +109,25 @@ export async function home_page(props) {
 		html += buildProductView(products[i], i);
 	}
 	root.innerHTML = html;
+
+	const typeOptions = document.getElementsByClassName('filter-type');
+	for (let i = 0; i < typeOptions.length; i++) {
+		typeOptions[i].addEventListener('click', async (e) => {
+			e.preventDefault();
+			const id = typeOptions[i].id;
+			if (id == 'all') {
+				filter.where = null;
+			} else {
+				filter.where = {
+					first: 'type',
+					comparison: '==',
+					second: typeOptions[i].id,
+				};
+			}
+			filter.selected.productType = id;
+			await home_page({ filter });
+		});
+	}
 
 	const brandOptions = document.getElementsByClassName('filter-brand');
 	for (let i = 0; i < brandOptions.length; i++) {
