@@ -47,11 +47,13 @@ export async function home_page(props) {
 					<li id="Adidas" class="filter-brand"><a class="dropdown-item" href="#">Adidas</a></li>
 					<li id="Jordan" class="filter-brand"><a class="dropdown-item" href="#">Jordan</a></li>
 					<li id="Yeezy" class="filter-brand"><a class="dropdown-item" href="#">Yeezy</a></li>
+					<li id="Essentials" class="filter-brand"><a class="dropdown-item" href="#">Essentials</a></li>
 				</ul>
 			</li>
 			`;
 
-	html += `
+	if (filter.selected.brand == 'all') {
+		html += `
 			<li class="dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 				Product Type: ${filter.selected.productType.toUpperCase()}
@@ -65,8 +67,6 @@ export async function home_page(props) {
 				</ul>
 			</li>
 			`;
-
-	if (filter.selected.brand == 'all') {
 		html += `
 			<li class="dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
