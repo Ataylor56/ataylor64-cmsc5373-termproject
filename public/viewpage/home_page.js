@@ -6,8 +6,11 @@ import { DEV } from '../model/constants.js';
 import { currentUser } from '../controller/firebase_auth.js';
 import { cart } from './cart_page.js';
 import { product_page } from './product_page.js';
+import { accountInfo } from './profile_page.js';
 
 let filter = null;
+let last = null;
+let first = null;
 
 export function addEventListeners() {
 	MENU.Home.addEventListener('click', async (e) => {
@@ -35,9 +38,19 @@ export async function home_page(props) {
 	}
 
 	const dropdownFilterList = await getDropdownFilterList();
+	let mySize = '';
+	if (accountInfo.shirtSize || accountInfo.sweatshirtSize || accountInfo.shoeSize) {
+		mySize = '<li id="my-size" class="filter-size"><a class="dropdown-item" href="#">My Size</a></li>';
+	}
 
 	html += `
-        <div class="d-flex flex-row justify-content-end ">
+        <div class="container">
+			<div class="d-flex justify-content-start mt-3">
+			<button id="back" class="btn btn-outline-primary page-button m-2">&larr;</button>
+			<div class="m-3 text-primary">1</div>
+			<button id="next" class="btn btn-outline-primary page-button m-2">&rarr;</button>
+			</div>
+			<div class="d-flex justify-content-end">
 			<li class="dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 				Brand: ${filter.selected.brand.toUpperCase()}
@@ -64,6 +77,19 @@ export async function home_page(props) {
 					<li id="Shirts" class="filter-type"><a class="dropdown-item" href="#">Shirts</a></li>
 					<li id="Sweatshirts" class="filter-type"><a class="dropdown-item" href="#">Sweatshirts</a></li>
 					<li id="Accessories" class="filter-type"><a class="dropdown-item" href="#">Accessories</a></li>
+				</ul>
+			</li>
+			<li class="dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+				Size: ALL
+				</a>
+				<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+					${mySize}
+					<li id="s" class="filter-size"><a class="dropdown-item" href="#">S</a></li>
+					<li id="m" class="filter-size"><a class="dropdown-item" href="#">M</a></li>
+					<li id="l" class="filter-size"><a class="dropdown-item" href="#">L</a></li>
+					<li id="xl" class="filter-size"><a class="dropdown-item" href="#">XL</a></li>
+					<li id="2xl" class="filter-size"><a class="dropdown-item" href="#">2XL</a></li>
 				</ul>
 			</li>
 			`;
@@ -94,6 +120,8 @@ export async function home_page(props) {
 	let products;
 	try {
 		products = await getProductList({ filter });
+		last = products.pop();
+		first = products.pop();
 		if (cart && cart.getTotalQty() != 0) {
 			cart.items.forEach((item) => {
 				const p = products.find((e) => e.docId == item.docId);
@@ -109,6 +137,15 @@ export async function home_page(props) {
 		html += buildProductView(products[i], i);
 	}
 	root.innerHTML = html;
+
+	const pageButtons = document.getElementsByClassName('page-button');
+	for (let i = 0; i < pageButtons.length; i++) {
+		pageButtons[i].addEventListener('click', async (e) => {
+			e.preventDefault();
+			const direction = pageButtons[i].id;
+			console.log(direction);
+		});
+	}
 
 	const typeOptions = document.getElementsByClassName('filter-type');
 	for (let i = 0; i < typeOptions.length; i++) {

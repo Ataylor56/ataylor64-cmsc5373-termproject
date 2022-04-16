@@ -19,7 +19,6 @@ export async function product_page(productId) {
                 Brand: ${product.brand}<br>
                 Model: ${product.model}<br>
                 Colorway: ${product.productStyle}<br>
-                Price: $${product.price}<br>
                 Number In Stock: ${product.stock}
                 <div class="container pt-3 ${currentUser && product.stock !== 0 ? 'd-block' : 'd-none'}">
                 <form method="post" class="form-product-qty">
@@ -31,6 +30,12 @@ export async function product_page(productId) {
                 </form>
             </div>
             </div>
+        </div>
+        <div class="m-3 container border border-dark">
+        <div>Reviews</div>
+        <div class="column">
+            There are no reviews :(
+        </div>
         </div>
     </div>   
     `;

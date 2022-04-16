@@ -10,6 +10,8 @@ import {
 	updateDoc,
 	where,
 	doc,
+	limit,
+	startAfter,
 } from 'https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore.js';
 import { AccountInfo } from '../model/account_info.js';
 import { COLLECTION_NAMES } from '../model/constants.js';
@@ -21,22 +23,39 @@ const db = getFirestore();
 export async function getProductList(props) {
 	const filter = props.filter;
 	let q = null;
+	const last = props.last ? props.last : null;
 	const products = [];
 
-	if (filter.where) {
-		q = query(collection(db, COLLECTION_NAMES.PRODUCT), where(filter.where.first, filter.where.comparison, filter.where.second));
+	if (filter.where && last == null) {
+		q = query(collection(db, COLLECTION_NAMES.PRODUCT), where(filter.where.first, filter.where.comparison, filter.where.second), limit(8));
+	} else if (filter.where && last) {
+		q = query(
+			collection(db, COLLECTION_NAMES.PRODUCT),
+			where(filter.where.first, filter.where.comparison, filter.where.second),
+			startAfter(last),
+			limit(8)
+		);
+	} else if (!filter.where && last == null) {
+		q = query(collection(db, COLLECTION_NAMES.PRODUCT), orderBy(filter.orderBy, filter.order), limit(8));
 	} else {
-		q = query(collection(db, COLLECTION_NAMES.PRODUCT), orderBy(filter.orderBy, filter.order));
+		q = query(collection(db, COLLECTION_NAMES.PRODUCT), orderBy(filter.orderBy, filter.order), startAfter(last), limit(8));
 	}
-
 	const snapShot = await getDocs(q);
-
+	const lastProduct = snapShot.docs[snapShot.docs.length - 1];
+	const firstProduct = snapShot.docs[0];
+	console.log(lastProduct);
 	snapShot.forEach((doc) => {
 		const p = new Product(doc.data());
 		p.set_docId(doc.id);
 		products.push(p);
 	});
+	products.push(firstProduct);
+	products.push(lastProduct);
 	return products;
+}
+
+export async function getNextProducts(props) {
+	const filter = props.filter;
 }
 
 export async function checkout(cart) {
