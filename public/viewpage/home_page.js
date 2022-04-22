@@ -16,7 +16,7 @@ export function addEventListeners() {
 	MENU.Home.addEventListener('click', async (e) => {
 		history.pushState(null, null, ROUTE_PATHNAMES.HOME);
 		const label = Util.disableButton(MENU.Home);
-		await home_page({ filter });
+		await home_page();
 		Util.enableButton(MENU.Home, label);
 	});
 }
@@ -27,6 +27,7 @@ export async function home_page(props) {
 	if (!props) {
 		filter = {
 			selected: {
+				size: 'all',
 				brand: 'all',
 				productType: 'all',
 			},
@@ -38,11 +39,13 @@ export async function home_page(props) {
 	}
 
 	const dropdownFilterList = await getDropdownFilterList();
+	const sizeOptions = await getSizeOptions();
 	let mySize = '';
-	if (accountInfo.shirtSize || accountInfo.sweatshirtSize || accountInfo.shoeSize) {
-		mySize = '<li id="my-size" class="filter-size"><a class="dropdown-item" href="#">My Size</a></li>';
+	if (currentUser) {
+		if (accountInfo.shirtSize || accountInfo.sweatshirtSize || accountInfo.shoeSize) {
+			mySize = '<li id="my-size" class="filter-size"><a class="dropdown-item" href="#">My Size</a></li>';
+		}
 	}
-
 	html += `
         <div class="container">
 			<div class="d-flex justify-content-start mt-3">
@@ -81,15 +84,11 @@ export async function home_page(props) {
 			</li>
 			<li class="dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-				Size: ALL
+				Size: ${filter.selected.size.toUpperCase()}
 				</a>
 				<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 					${mySize}
-					<li id="s" class="filter-size"><a class="dropdown-item" href="#">S</a></li>
-					<li id="m" class="filter-size"><a class="dropdown-item" href="#">M</a></li>
-					<li id="l" class="filter-size"><a class="dropdown-item" href="#">L</a></li>
-					<li id="xl" class="filter-size"><a class="dropdown-item" href="#">XL</a></li>
-					<li id="2xl" class="filter-size"><a class="dropdown-item" href="#">2XL</a></li>
+					${sizeOptions}
 				</ul>
 			</li>
 			`;
@@ -144,6 +143,25 @@ export async function home_page(props) {
 			e.preventDefault();
 			const direction = pageButtons[i].id;
 			console.log(direction);
+		});
+	}
+
+	const sizeFilterOptions = document.getElementsByClassName('filter-size');
+	for (let i = 0; i < sizeFilterOptions.length; i++) {
+		sizeFilterOptions[i].addEventListener('click', async (e) => {
+			e.preventDefault();
+			const id = sizeFilterOptions[i].id;
+			if (id == 'all') {
+				filter.where = null;
+			} else {
+				filter.where = {
+					first: 'size',
+					comparison: '==',
+					second: sizeFilterOptions[i].id,
+				};
+			}
+			filter.selected.size = id;
+			await home_page({ filter });
 		});
 	}
 
@@ -245,6 +263,7 @@ function buildProductView(product, index) {
 			Type: ${product.type}<br>
             ${Util.currency(product.price.toFixed(2))}<br>
 			Total Stock: ${product.stock}<br>
+			Rating: ${Number.isNaN(product.rating) ? 'Not Rated' : product.rating}<br>
 			<button id="button-more-info-${product.docId}" class="btn" type="submit">More Info &rarr;</button>
             </p>
             <div class="container pt-3 ${currentUser && product.stock !== 0 ? 'd-block' : 'd-none'}">
@@ -272,6 +291,45 @@ async function getDropdownFilterList() {
 	}
 	if (filter.orderBy != 'price') {
 		html += `<li id="price" class="filter"><a class="dropdown-item" href="#">Price</a></li>`;
+	}
+	return html;
+}
+
+async function getSizeOptions() {
+	let html = '';
+	if (filter.selected.productType == 'Shoes') {
+		html += `
+		<li id="6" class="filter-size"><a class="dropdown-item" href="#">6</a></li>
+		<li id="7" class="filter-size"><a class="dropdown-item" href="#">7</a></li>
+		<li id="8" class="filter-size"><a class="dropdown-item" href="#">8</a></li>
+		<li id="9" class="filter-size"><a class="dropdown-item" href="#">9</a></li>
+		<li id="10" class="filter-size"><a class="dropdown-item" href="#">10</a></li>
+		<li id="11" class="filter-size"><a class="dropdown-item" href="#">11</a></li>
+		<li id="12" class="filter-size"><a class="dropdown-item" href="#">12</a></li>
+		`;
+	} else if (filter.selected.productType == 'Shirts' || filter.selected.productType == 'Sweatshirts') {
+		html += `
+		<li id="s" class="filter-size"><a class="dropdown-item" href="#">S</a></li>
+		<li id="m" class="filter-size"><a class="dropdown-item" href="#">M</a></li>
+		<li id="l" class="filter-size"><a class="dropdown-item" href="#">L</a></li>
+		<li id="xl" class="filter-size"><a class="dropdown-item" href="#">XL</a></li>
+		<li id="2xl" class="filter-size"><a class="dropdown-item" href="#">2XL</a></li>
+		`;
+	} else {
+		html += `
+		<li id="s" class="filter-size"><a class="dropdown-item" href="#">S</a></li>
+		<li id="m" class="filter-size"><a class="dropdown-item" href="#">M</a></li>
+		<li id="l" class="filter-size"><a class="dropdown-item" href="#">L</a></li>
+		<li id="xl" class="filter-size"><a class="dropdown-item" href="#">XL</a></li>
+		<li id="2xl" class="filter-size"><a class="dropdown-item" href="#">2XL</a></li>
+		<li id="6" class="filter-size"><a class="dropdown-item" href="#">6</a></li>
+		<li id="7" class="filter-size"><a class="dropdown-item" href="#">7</a></li>
+		<li id="8" class="filter-size"><a class="dropdown-item" href="#">8</a></li>
+		<li id="9" class="filter-size"><a class="dropdown-item" href="#">9</a></li>
+		<li id="10" class="filter-size"><a class="dropdown-item" href="#">10</a></li>
+		<li id="11" class="filter-size"><a class="dropdown-item" href="#">11</a></li>
+		<li id="12" class="filter-size"><a class="dropdown-item" href="#">12</a></li>
+		`;
 	}
 	return html;
 }

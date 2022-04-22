@@ -2,12 +2,14 @@ export class Product {
 	constructor(data) {
 		if (data) {
 			this.name = data.name.trim();
-			this.type = data.type.trim();
+			this.type = data.type ? data.type.trim() : '';
 			this.brand = data.brand.trim();
 			this.model = data.model.trim();
 			this.productStyle = data.productStyle.trim();
+			this.size = data.size ? data.size.trim() : '';
 			this.price = typeof data.price == 'number' ? data.price : Number(data.price);
 			this.stock = typeof data.stock == 'number' ? data.stock : Number(data.stock);
+			this.rating = data.rating && typeof data.rating == 'number' ? 0 : Number(data.rating);
 			this.summary = data.summary.trim();
 			this.imageName = data.imageName;
 			this.imageURL = data.imageURL;
@@ -33,8 +35,10 @@ export class Product {
 			brand: this.brand,
 			model: this.model,
 			productStyle: this.productStyle,
+			size: this.size,
 			price: this.price,
 			stock: this.stock,
+			rating: this.rating,
 			summary: this.summary,
 			imageName: this.imageName,
 			imageURL: this.imageURL,
