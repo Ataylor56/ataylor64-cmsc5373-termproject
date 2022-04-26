@@ -157,6 +157,12 @@ export async function home_page(props) {
 			const id = sizeFilterOptions[i].id;
 			if (id == 'all') {
 				filter.where = null;
+			} else if (id == 'my-size') {
+				filter.where = {
+					first: 'size',
+					comparison: '==',
+					second: accountInfo.shoeSize,
+				};
 			} else {
 				filter.where = {
 					first: 'size',
