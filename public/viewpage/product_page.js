@@ -13,7 +13,6 @@ import { DEV } from '../model/constants.js';
 import { currentUser, purchasedProducts } from '../controller/firebase_auth.js';
 import { cart } from './cart_page.js';
 import { Review } from '../model/review.js';
-import { accountInfo } from './profile_page.js';
 
 export async function product_page(productId) {
 	var product = await getProduct(productId);
