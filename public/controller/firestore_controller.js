@@ -79,7 +79,6 @@ export async function getProductList(props) {
 	const snapShot = await getDocs(q);
 	const lastProduct = snapShot.docs[snapShot.docs.length - 1];
 	const firstProduct = snapShot.docs[0];
-	console.log(lastProduct);
 	snapShot.forEach((doc) => {
 		const p = new Product(doc.data());
 		p.set_docId(doc.id);

@@ -214,7 +214,7 @@ async function updateProductReview(r) {
 			document.getElementById(`${review.docId}-star-wrapper`).innerHTML = '';
 			document.getElementById(`cancel-${reviewId}`).style.display = 'none';
 			document.getElementById(`${review.docId}-rating-wrapper`).style.display = 'block';
-			document.getElementById(`${review.docId}-review-rating`).innerHTML = updateInfo.rating;
+			document.getElementById(`${review.docId}-review-rating`).innerHTML = reviewRating.value;
 			document.getElementById('product-avg-rating').innerHTML = `Average Rating: ${+product.averageRating.toFixed(2)}`;
 		} catch (error) {
 			Util.info('Error', JSON.stringify(error));
@@ -342,9 +342,14 @@ export async function addNewReview(e) {
 	document.getElementById('product-avg-rating').innerHTML = `Average Rating: ${+product.averageRating.toFixed(2)}`;
 	const deleteButton = document.getElementById(`delete-${review.docId}`);
 	deleteButton.addEventListener('click', async (e) => {
-		console.log(`clicked ${review.docId}`);
 		deleteReview(review);
 	});
+	var editButton = document.getElementById(`edit-${review.docId}`);
+	editButton.addEventListener('click', async (e) => editReview(review));
+	var saveButton = document.getElementById(`save-${review.docId}`);
+	var cancelButton = document.getElementById(`cancel-${review.docId}`);
+	saveButton.addEventListener('click', async (e) => updateProductReview(review));
+	cancelButton.addEventListener('click', async (e) => restoreReview(review));
 	e.target.reset();
 	modalAddReview.modal.hide();
 }
