@@ -17,7 +17,7 @@ import { accountInfo } from './profile_page.js';
 
 export async function product_page(productId) {
 	var product = await getProduct(productId);
-	if (cart.items.length > 0) {
+	if (cart.hasItems()) {
 		var currentProductInCart = cart.items.find((product) => product.docId == productId);
 		product.qty = currentProductInCart.qty;
 	}
@@ -68,13 +68,17 @@ export async function product_page(productId) {
 
 	if (reviews && reviews.length > 0) {
 		reviews.forEach((review) => {
-			var deleteButton = document.getElementById(`delete-${review.docId}`);
-			var editButton = document.getElementById(`edit-${review.docId}`);
-			var saveButton = document.getElementById(`save-${review.docId}`);
+			if (currentUser.uid == review.uid) {
+				var deleteButton = document.getElementById(`delete-${review.docId}`);
+				var editButton = document.getElementById(`edit-${review.docId}`);
+				var saveButton = document.getElementById(`save-${review.docId}`);
+				var cancelButton = document.getElementById(`cancel-${review.docId}`);
 
-			deleteButton.addEventListener('click', async () => deleteReview(review));
-			editButton.addEventListener('click', () => editReview(review));
-			saveButton.addEventListener('click', async (e) => updateProductReview(review));
+				deleteButton.addEventListener('click', async (e) => deleteReview(review));
+				editButton.addEventListener('click', async (e) => editReview(review));
+				saveButton.addEventListener('click', async (e) => updateProductReview(review));
+				cancelButton.addEventListener('click', async (e) => restoreReview(review));
+			}
 		});
 	}
 
@@ -111,18 +115,38 @@ export async function product_page(productId) {
 	}
 }
 
-function editReview(review) {
+async function restoreReview(r) {
+	const reviewId = r.docId;
+	const reviewTitle = document.getElementById(`${reviewId}-review-title`);
+	const reviewRating = document.getElementById(`${reviewId}-review-rating`);
+	const reviewSummary = document.getElementById(`${reviewId}-review-summary`);
+	const review = await getReview(reviewId);
+	reviewTitle.innerHTML = review.title;
+	reviewRating.innerHTML = review.rating;
+	reviewSummary.innerHTML = review.summary;
+	reviewSummary.removeAttribute('contentEditable');
+	reviewTitle.removeAttribute('contentEditable');
+	document.getElementById(`cancel-${reviewId}`).style.display = 'none';
+	document.getElementById(`save-${reviewId}`).style.display = 'none';
+	document.getElementById(`edit-${reviewId}`).style.display = 'block';
+	document.getElementById(`${review.docId}-star-wrapper`).innerHTML = '';
+	document.getElementById(`${review.docId}-rating-wrapper`).style.display = 'block';
+}
+
+async function editReview(review) {
 	const currentUserId = currentUser.uid;
 	const reviewPostUserId = review.uid;
 	if (currentUserId === reviewPostUserId) {
 		try {
+			const r = await getReview(review.docId);
 			document.getElementById(`edit-${review.docId}`).style.display = 'none';
 			document.getElementById(`save-${review.docId}`).style.display = 'block';
+			document.getElementById(`cancel-${review.docId}`).style.display = 'block';
 			const reviewTitle = document.getElementById(`${review.docId}-review-title`);
 			reviewTitle.setAttribute('contentEditable', true);
 			document.getElementById(`${review.docId}-rating-wrapper`).style.display = 'none';
 			const starWrapper = document.getElementById(`${review.docId}-star-wrapper`);
-			starWrapper.innerHTML = buildStars(review);
+			starWrapper.innerHTML = buildStars(r);
 			const stars = document.getElementsByClassName(`${review.docId}-star`);
 			for (let i = 0; i < stars.length; i++) {
 				stars[i].addEventListener('click', () => {
@@ -182,13 +206,14 @@ async function updateProductReview(r) {
 			const product = await getProduct(review.productId);
 			product.get_new_average(ratingDifference);
 			await updateProduct(review.productId, { totalRating: product.totalRating, averageRating: product.averageRating });
-			reviewSummary.setAttribute('contentEditable', false);
-			reviewTitle.setAttribute('contentEditable', false);
+			reviewSummary.removeAttribute('contentEditable');
+			reviewTitle.removeAttribute('contentEditable');
 			const editButton = document.getElementById(`edit-${reviewId}`);
 			const saveButton = document.getElementById(`save-${reviewId}`);
 			editButton.style.display = 'block';
 			saveButton.style.display = 'none';
 			document.getElementById(`${review.docId}-star-wrapper`).innerHTML = '';
+			document.getElementById(`cancel-${reviewId}`).style.display = 'none';
 			document.getElementById(`${review.docId}-rating-wrapper`).style.display = 'block';
 			document.getElementById(`${review.docId}-review-rating`).innerHTML = updateInfo.rating;
 			document.getElementById('product-avg-rating').innerHTML = `Average Rating: ${+product.averageRating.toFixed(2)}`;
@@ -227,6 +252,26 @@ async function deleteReview(review) {
 }
 
 function buildReviewView(review) {
+	let editOptions = '';
+	if (currentUser.uid == review.uid) {
+		editOptions = `
+        <div class="d-flex flex-row justify-content-end">
+
+            <button style="display: none;" class="m-2" id="save-${review.docId}">
+                SAVE
+            </button>
+            <button class="m-2" id="edit-${review.docId}">
+                ✎
+            </button>
+            <button style="display: none;" class="m-2" id="cancel-${review.docId}">
+                CANCEL
+            </button>
+            <button class="m-2" id="delete-${review.docId}">
+                🗑
+            </button>
+        </div>
+        `;
+	}
 	return `
     <div id="${review.docId}"class="border border-primary rounded mt-3">
         <div class="bg-info text-white p-2">
@@ -238,17 +283,7 @@ function buildReviewView(review) {
             <div class="p-2">
             (On ${new Date(review.timestamp).toLocaleDateString()})
             </div>
-            <div class="d-flex flex-row justify-content-end">
-                <button style="display: none;" class="m-2" id="save-${review.docId}">
-                    SAVE
-                </button>
-                <button class="m-2" id="edit-${review.docId}">
-                    ✎
-                </button>
-                <button class="m-2" id="delete-${review.docId}">
-                    🗑
-                </button>
-            </div>
+            ${editOptions}
         </div>
         <b class="p-2">Summary:<br></b>
         <div class="p-2" id="${review.docId}-review-summary" class="p-2">

@@ -38,6 +38,13 @@ export class ShoppingCart {
 		return n;
 	}
 
+	hasItems() {
+		if (this.items.length > 0) {
+			return true;
+		}
+		return false;
+	}
+
 	getTotalPrice() {
 		let total = 0;
 		this.items.forEach((p) => (total += p.price * p.qty));
