@@ -17,9 +17,9 @@ import { accountInfo } from './profile_page.js';
 
 export async function product_page(productId) {
 	var product = await getProduct(productId);
-	if (cart.hasItems()) {
+	if (currentUser && cart.hasItems()) {
 		var currentProductInCart = cart.items.find((product) => product.docId == productId);
-		product.qty = currentProductInCart.qty;
+		if (currentProductInCart) product.qty = currentProductInCart.qty;
 	}
 	let html = `<h1>${product.brand} ${product.model} ${product.productStyle}</h1>
     <input type="hidden" name="productId" value=${productId}>
@@ -228,7 +228,7 @@ async function updateProductReview(r) {
 async function deleteReview(review) {
 	const currentUserId = currentUser.uid;
 	const reviewPostUserId = review.uid;
-	if (currentUserId === reviewPostUserId) {
+	if (currentUser && currentUserId === reviewPostUserId) {
 		try {
 			const replyWrapper = document.getElementById(review.docId);
 			replyWrapper.style.display = 'none';
@@ -253,7 +253,7 @@ async function deleteReview(review) {
 
 function buildReviewView(review) {
 	let editOptions = '';
-	if (currentUser.uid == review.uid) {
+	if (currentUser && currentUser.uid == review.uid) {
 		editOptions = `
         <div class="d-flex flex-row justify-content-end">
 
