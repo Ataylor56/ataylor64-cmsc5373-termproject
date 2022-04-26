@@ -17,6 +17,14 @@ export const modalInfobox = {
 	title: document.getElementById('modal-infobox-title'),
 	body: document.getElementById('modal-infobox-body'),
 };
+
+export const modalAddReview = {
+	modal: new bootstrap.Modal(document.getElementById('modal-add-review'), { backdrop: 'static' }),
+	title: document.getElementById('modal-add-review-title'),
+	body: document.getElementById('modal-add-review-body'),
+	form: document.getElementById('form-add-review'),
+};
+
 export const modalTransaction = {
 	modal: new bootstrap.Modal(document.getElementById('modal-transaction'), { backdrop: 'static' }),
 	title: document.getElementById('modal-transaction-title'),

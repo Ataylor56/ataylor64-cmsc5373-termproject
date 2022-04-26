@@ -1,12 +1,13 @@
-import { MENU, root } from './elements.js';
+import { MENU, modalAddReview, root } from './elements.js';
 import { ROUTE_PATHNAMES } from '../controller/route.js';
 import * as Util from './util.js';
-import { getProductList } from '../controller/firestore_controller.js';
+import { addReview, getProduct, getProductList, updateProduct } from '../controller/firestore_controller.js';
 import { DEV } from '../model/constants.js';
 import { currentUser } from '../controller/firebase_auth.js';
 import { cart } from './cart_page.js';
-import { product_page } from './product_page.js';
+import { product_page, addNewReview } from './product_page.js';
 import { accountInfo } from './profile_page.js';
+import { Review } from '../model/review.js';
 
 let filter = null;
 let last = null;
@@ -18,6 +19,9 @@ export function addEventListeners() {
 		const label = Util.disableButton(MENU.Home);
 		await home_page();
 		Util.enableButton(MENU.Home, label);
+	});
+	modalAddReview.form.addEventListener('submit', async (e) => {
+		addNewReview(e);
 	});
 }
 
@@ -263,7 +267,7 @@ function buildProductView(product, index) {
 			Type: ${product.type}<br>
             ${Util.currency(product.price.toFixed(2))}<br>
 			Total Stock: ${product.stock}<br>
-			Rating: ${Number.isNaN(product.rating) ? 'Not Rated' : product.rating}<br>
+			Rating: ${product.averageRating == 0 ? 'Not Rated' : +product.averageRating.toFixed(2)}<br>
 			<button id="button-more-info-${product.docId}" class="btn" type="submit">More Info &rarr;</button>
             </p>
             <div class="container pt-3 ${currentUser && product.stock !== 0 ? 'd-block' : 'd-none'}">

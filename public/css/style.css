@@ -29,3 +29,7 @@ li.nav-item {
 li {
 	list-style-type: none;
 }
+
+.star-fill {
+	fill: red;
+}

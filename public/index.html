@@ -61,6 +61,49 @@
       </div>
     </div>
     <!-- Modal: popup infobox-->
+
+    <!-- Modal: add review-->
+    <div class="modal fade" id="modal-add-review" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-infobox-title" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-add-review-title">Add Review</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="modal-add-review-body">
+            <form id="form-add-review" method="post">
+              <div>
+                <input name="rating" type="hidden">
+                <img id="1" class="star" src="images/star.svg" width="50px">
+                <img id="2" class="star" src="images/star.svg" width="50px">
+                <img id="3" class="star" src="images/star.svg" width="50px">
+                <img id="4" class="star" src="images/star.svg" width="50px">
+                <img id="5" class="star" src="images/star.svg" width="50px">
+              </div>
+              <div>
+                <br>
+                <h6 class="selected-rating"></h6>
+              </div>
+              <br>
+              <div>
+                <input type="title" name="title" placeholder="Review Title">
+              </div>
+              <div>
+                <textarea name="summary" cols="50" rows="5" placeholder="Review Summary"></textarea>
+              </div>
+              <br>
+              <div>
+                <button class="btn btn-outline-primary" type="submit">Add Review</button>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal: add review-->
       <!-- Sign In Modal -->
   <div class="modal fade" id="modal-signin" data-backdrop="static" data-keyboard="false" tabindex="-1"
   aria-labelledby="modal-signin-form-label" aria-hidden="true" role="dialog">

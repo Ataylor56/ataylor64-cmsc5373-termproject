@@ -1,12 +1,11 @@
 import { MENU, root } from './elements.js';
 import { ROUTE_PATHNAMES } from '../controller/route.js';
 import { ShoppingCart } from '../model/shopping_cart.js';
-import { currentUser } from '../controller/firebase_auth.js';
+import { currentUser, purchasedProducts } from '../controller/firebase_auth.js';
 import { currency, disableButton, enableButton, info } from './util.js';
 import { home_page } from './home_page.js';
 import { DEV } from '../model/constants.js';
 import { checkout, updateCheckoutProducts } from '../controller/firestore_controller.js';
-
 export function addEventListeners() {
 	MENU.Cart.addEventListener('click', async (e) => {
 		history.pushState(null, null, ROUTE_PATHNAMES.CART);
@@ -104,8 +103,11 @@ export async function cart_page() {
 			// save to firebase(await)
 			await checkout(cart);
 			cart.claimStock();
-	
-			cart.items.forEach(product => updateProduct(product));
+
+			cart.items.forEach((product) => {
+				updateProduct(product);
+				purchasedProducts.push(product);
+			});
 
 			info('Success!', 'Checkout Complete');
 			cart.clear();

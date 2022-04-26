@@ -12,9 +12,11 @@ import { routing, ROUTE_PATHNAMES } from './route.js';
 import { initShoppingCart } from '../viewpage/cart_page.js';
 import { DEV } from '../model/constants.js';
 import { readAccountProfile } from '../viewpage/profile_page.js';
+import { getPurchasedProductsList } from './firestore_controller.js';
 
 const auth = getAuth();
 export let currentUser = null;
+export let purchasedProducts = [];
 
 export function addEventListeners() {
 	onAuthStateChanged(auth, authStateChanged);
@@ -90,6 +92,7 @@ async function authStateChanged(user) {
 		}
 		await readAccountProfile();
 		initShoppingCart();
+		purchasedProducts = await getPurchasedProductsList(currentUser.uid);
 		routing(window.location.pathname, window.location.hash);
 	} else {
 		let menus = document.getElementsByClassName('modal-preauth');
@@ -101,6 +104,7 @@ async function authStateChanged(user) {
 			menus[i].style.display = 'none';
 		}
 		history.pushState(null, null, ROUTE_PATHNAMES.HOME);
+		purchasedProducts = [];
 		routing(window.location.pathname, window.location.hash);
 	}
 }
